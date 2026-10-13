@@ -1,0 +1,8 @@
+{
+  "name": "Trails of Tukana Helper",
+  "description": "Companion and helper web app for Trails of Tukana board game.",
+  "requestFrame": "none",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/styles.css?v=1.3.0">
+    <link rel="icon" href="ico/favicon.ico" type="image/x-icon">
+    <link rel="preload" href="css/styles.css?v=1.3.0" as="style">
+
+    <title>Trails of Tukana Helper</title>
+    <meta name="description" content="Companion and helper web app for Trails of Tukana board game.">
+    <meta property="og:title" content="Trails of Tukana Helper">
+    <meta property="og:description" content="Companion and helper web app for Trails of Tukana board game.">
+    <meta name="theme-color" content="#024253">
+</head>
+
+<body>
+    <!-- Основной контейнер приложения -->
+    <div class="app">
+
+        <!-- Верхняя панель управления (Header Bar) -->
+        <header class="app-header" id="app-header">
+            <button class="header-btn" id="btn-menu" onclick="openMenuPopup()" title="Меню / Новая игра"
+                aria-label="Menu">
+                <span>☰</span>
+            </button>
+            <div class="header-title" id="header-title">Trails of Tukana</div>
+            <div class="header-actions">
+                <button class="header-btn" id="btn-tracker" onclick="toggleTrackerModal()" title="Счётчик карт в колоде"
+                    aria-label="Card Tracker">
+                    <span>📊</span>
+                </button>
+                <button class="header-btn" id="btn-sound" onclick="toggleSound()" title="Звук вкл/выкл"
+                    aria-label="Sound Toggle">
+                    <span id="sound-icon">🔊</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Контент страниц -->
+        <main class="content" id="content">
+
+            <!-- СТРАНИЦА 1: Старт -->
+            <section class="page n1 active" id="page-1">
+                <div class="start-logo-container">
+                    <img src="img/logo.png" alt="Trails of Tukana" class="start-logo">
+                    <h1 class="app-headline">Trails of Tukana</h1>
+                    <p class="app-subheadline">Game Companion & Deck Tracker</p>
+                    <div class="app-version-badge" id="app-version-badge">v1.3.0</div>
+                </div>
+                <div class="button-container start">
+                    <button class="button button-continue" id="btn-continue" onclick="resumeGame()"
+                        style="display: none;">
+                        CONTINUE
+                    </button>
+                    <button class="button start" onclick="startNewGameFlow()">
+                        START
+                    </button>
+                </div>
+            </section>
+
+            <!-- СТРАНИЦА 2: Выбор карты -->
+            <section class="page n2" id="page-2">
+                <div class="page-title">CHOOSE ISLAND MAP</div>
+                <div class="button-container map">
+                    <button class="button button-map" onclick="selectMap(0)">
+                        <span>SMALL MAP</span>
+                        <small class="btn-subtext">Isla Petit (2 Rounds)</small>
+                    </button>
+                    <button class="button button-map" onclick="selectMap(1)">
+                        <span>BIG MAP</span>
+                        <small class="btn-subtext">Isla Grande (3 Rounds)</small>
+                    </button>
+                </div>
+                <div class="page-nav-back">
+                    <button class="button button-back-small" onclick="goToPage(1)">BACK</button>
+                </div>
+            </section>
+
+            <!-- СТРАНИЦА 3: Расстановка деревень (Setup) -->
+            <section class="page n3" id="page-3">
+                <div class="map-top-bar">
+                    <button class="button button-shuffle" onclick="MapDraw()">SHUFFLE</button>
+                </div>
+
+                <div class="img-container map">
+                    <img class="mapIMG" src="img/map.png" alt="Tukana Island Map">
+
+                    <!-- Буквы деревень (10 позиций на карте) -->
+                    <div class="name-container name">
+                        <div class="txtImgMAP n1" style="top:12.5%; left: 48.3%">A</div>
+                        <div class="txtImgMAP n2" style="top:19%; left: 60.7%">A</div>
+                        <div class="txtImgMAP n3" style="top:34%; left: 68.5%">A</div>
+                        <div class="txtImgMAP n4" style="top:53%; left: 68.5%">A</div>
+                        <div class="txtImgMAP n5" style="top:68.5%; left: 60.7%">A</div>
+                        <div class="txtImgMAP n6" style="top:75%; left: 48%">A</div>
+                        <div class="txtImgMAP n7" style="top:68.5%; left: 35.5%">A</div>
+                        <div class="txtImgMAP n8" style="top:53%; left: 27.5%">A</div>
+                        <div class="txtImgMAP n9" style="top:34%; left: 27.5%">A</div>
+                        <div class="txtImgMAP n10" style="top:19%; left: 35.5%">A</div>
+                    </div>
+                </div>
+
+                <div class="setup-controls">
+                    <div class="setup-item">
+                        <div class="txtMAP">SET-UP CARDS</div>
+                        <button class="button button-setup" id="setup-btn" onclick="toggleSetUp()">2-4 PLAYERS</button>
+                    </div>
+                </div>
+                <button class="button button-round1" onclick="Round1()">ROUND 1 ➔</button>
+
+            </section>
+
+            <!-- СТРАНИЦА 4: Игровой стол (Gameplay) -->
+            <section class="page n4" id="page-4">
+                <div class="game-top-row">
+                    <div class="round-container">
+                        <div class="round-number">ROUND 1</div>
+                    </div>
+                </div>
+
+                <!-- Карты: Предыдущие и Текущие -->
+                <div class="cards-container">
+                    <div class="last-cards-container" id="last-cards-wrap" style="display: none;">
+                        <img class="last-card n1" id="last-card-1" src="img/mountan.png" alt="Last Card 1">
+                        <div class="text-last">
+                            <span class="first-line">LAST</span>
+                            <span class="second-line">CARD</span>
+                        </div>
+                    </div>
+
+                    <div class="open-cards-container" id="open-cards">
+                        <div class="open-card-wrapper" id="open-card-wrap-1">
+                            <img class="open-card n1" id="open-card-1" src="img/desert.png" alt="Card 1">
+                        </div>
+                        <div class="open-card-wrapper" id="open-card-wrap-2">
+                            <img class="open-card n2" id="open-card-2" src="img/water.png" alt="Card 2">
+                        </div>
+                    </div>
+
+                    <div class="last-cards-container" id="last-cards-wrap-2" style="display: none;">
+                        <img class="last-card n2" id="last-card-2" src="img/forest.png" alt="Last Card 2">
+                        <div class="text-last">
+                            <span class="first-line">LAST</span>
+                            <span class="second-line">CARD</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Нижняя игровая зона: Колода и Бонусы деревень -->
+                <div class="down-container">
+                    <div class="down deck-container">
+                        <div class="deck" title="Открыть следующую пару карт">
+                            <img class="imgDeck" src="img/logo.png" alt="Card Deck">
+                            <div class="deck-info">
+                                <div class="bonus-lv" id="sight-bonuses">
+                                    <img class="imgBonus n1" id="sight-bonus-1" src="img/bird.png" alt="Sight Bonus 1"
+                                        onclick="toggleSightBonus(this)" title="Нажмите, чтобы отметить">
+                                    <img class="imgBonus n2" id="sight-bonus-2" src="img/dragon.png" alt="Sight Bonus 2"
+                                        onclick="toggleSightBonus(this)" title="Нажмите, чтобы отметить">
+                                </div>
+                                <div class="count-deck-container">
+                                    <div class="count-deck">
+                                        <div class="countCards" id="countCards">27</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Таблица бонусов деревень (A-A, B-B, C-C, D-D, E-E) -->
+                    <div class="down bonus-town">
+                        <div class="big-bonus-container" id="town-bonuses-container">
+                            <!-- A-A -->
+                            <div class="bonus-container n1">
+                                <div class="bonus base n1" id="bonus-base-1" onclick="handleBonusClick(1, false)">
+                                    <div class="kv n1">
+                                        <div class="galochka n1" id="chk-base-1" style="display: none;">✓</div>
+                                    </div>
+                                    <div class="textBonus">A—A 3</div>
+                                </div>
+                                <div class="bonus dop n1" id="bonus-dop-1" onclick="handleBonusClick(1, true)">
+                                    <div class="kv n1">
+                                        <div class="galochka n1" id="chk-dop-1" style="display: none;">✓</div>
+                                    </div>
+                                    <div class="textBonus">A—A 2</div>
+                                </div>
+                            </div>
+                            <!-- B-B -->
+                            <div class="bonus-container n2">
+                                <div class="bonus base n2" id="bonus-base-2" onclick="handleBonusClick(2, false)">
+                                    <div class="kv n2">
+                                        <div class="galochka n2" id="chk-base-2" style="display: none;">✓</div>
+                                    </div>
+                                    <div class="textBonus">B—B 4</div>
+                                </div>
+                                <div class="bonus dop n2" id="bonus-dop-2" onclick="handleBonusClick(2, true)">
+                                    <div class="kv n2">
+                                        <div class="galochka n2" id="chk-dop-2" style="display: none;">✓</div>
+                                    </div>
+                                    <div class="textBonus">B—B 2</div>
+                                </div>
+                            </div>
+                            <!-- C-C -->
+                            <div class="bonus-container n3">
+                                <div class="bonus base n3" id="bonus-base-3" onclick="handleBonusClick(3, false)">
+                                    <div class="kv n3">
+                                        <div class="galochka n3" id="chk-base-3" style="display: none;">✓</div>
+                                    </div>
+                                    <div class="textBonus">C—C 5</div>
+                                </div>
+                                <div class="bonus dop n3" id="bonus-dop-3" onclick="handleBonusClick(3, true)">
+                                    <div class="kv n3">
+                                        <div class="galochka n3" id="chk-dop-3" style="display: none;">✓</div>
+                                    </div>
+                                    <div class="textBonus">C—C 3</div>
+                                </div>
+                            </div>
+                            <!-- D-D -->
+                            <div class="bonus-container n4">
+                                <div class="bonus base n4" id="bonus-base-4" onclick="handleBonusClick(4, false)">
+                                    <div class="kv n4">
+                                        <div class="galochka n4" id="chk-base-4" style="display: none;">✓</div>
+                                    </div>
+                                    <div class="textBonus">D—D 6</div>
+                                </div>
+                                <div class="bonus dop n4" id="bonus-dop-4" onclick="handleBonusClick(4, true)">
+                                    <div class="kv n4">
+                                        <div class="galochka n4" id="chk-dop-4" style="display: none;">✓</div>
+                                    </div>
+                                    <div class="textBonus">D—D 4</div>
+                                </div>
+                            </div>
+                            <!-- E-E -->
+                            <div class="bonus-container n5">
+                                <div class="bonus base n5" id="bonus-base-5" onclick="handleBonusClick(5, false)">
+                                    <div class="kv n5">
+                                        <div class="galochka n5" id="chk-base-5" style="display: none;">✓</div>
+                                    </div>
+                                    <div class="textBonus">E—E 7</div>
+                                </div>
+                                <div class="bonus dop n5" id="bonus-dop-5" onclick="handleBonusClick(5, true)">
+                                    <div class="kv n5">
+                                        <div class="galochka n5" id="chk-dop-5" style="display: none;">✓</div>
+                                    </div>
+                                    <div class="textBonus">E—E 5</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Нижняя панель действий: Отмена и Следующий ход -->
+                <div class="game-action-bar">
+                    <button class="button btn-action-undo" id="btn-undo" onclick="undoDraw()" disabled
+                        title="Вернуться к предыдущей паре карт">
+                        <span>↩</span> UNDO
+                    </button>
+                    <button class="button btn-action-next" id="btn-next" onclick="Next()">
+                        NEXT ➔
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Модальное окно: Счётчик карт в колоде (Card Tracker) -->
+        <div class="tracker-modal-overlay" id="tracker-modal" onclick="closeTrackerIfBackdrop(event)">
+            <div class="tracker-modal-content">
+                <div class="tracker-modal-header">
+                    <div class="tracker-title">
+                        <span>📊 DECK TRACKER</span>
+                        <small id="tracker-deck-remaining">27 / 27 cards left</small>
+                    </div>
+                    <button class="tracker-close-btn" onclick="toggleTrackerModal()">✕</button>
+                </div>
+                <div class="tracker-cards-list">
+                    <!-- Пустыня -->
+                    <div class="tracker-row" id="tr-desert">
+                        <img class="tr-img" src="img/desert.png" alt="Desert">
+                        <div class="tr-info">
+                            <span class="tr-name">DESERT (Пустыня)</span>
+                            <div class="tr-bar-wrap">
+                                <div class="tr-bar" id="bar-desert" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="tr-count" id="count-desert">8 / 8</div>
+                    </div>
+                    <!-- Лес -->
+                    <div class="tracker-row" id="tr-forest">
+                        <img class="tr-img" src="img/forest.png" alt="Forest">
+                        <div class="tr-info">
+                            <span class="tr-name">FOREST (Лес)</span>
+                            <div class="tr-bar-wrap">
+                                <div class="tr-bar" id="bar-forest" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="tr-count" id="count-forest">7 / 7</div>
+                    </div>
+                    <!-- Горы -->
+                    <div class="tracker-row" id="tr-mountan">
+                        <img class="tr-img" src="img/mountan.png" alt="Mountain">
+                        <div class="tr-info">
+                            <span class="tr-name">MOUNTAIN (Горы)</span>
+                            <div class="tr-bar-wrap">
+                                <div class="tr-bar" id="bar-mountan" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="tr-count" id="count-mountan">6 / 6</div>
+                    </div>
+                    <!-- Вода -->
+                    <div class="tracker-row" id="tr-water">
+                        <img class="tr-img" src="img/water.png" alt="Water">
+                        <div class="tr-info">
+                            <span class="tr-name">WATER (Вода)</span>
+                            <div class="tr-bar-wrap">
+                                <div class="tr-bar" id="bar-water" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="tr-count" id="count-water">4 / 4</div>
+                    </div>
+                    <!-- Джокер -->
+                    <div class="tracker-row" id="tr-joker">
+                        <img class="tr-img" src="img/joker.png" alt="Joker">
+                        <div class="tr-info">
+                            <span class="tr-name">JOKER (Джокер)</span>
+                            <div class="tr-bar-wrap">
+                                <div class="tr-bar" id="bar-joker" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="tr-count" id="count-joker">2 / 2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Всплывающие диалоги (Next Round / Finish / Confirm Reset) -->
+        <div class="overlay" id="overlay">
+            <div class="popup" id="popup">
+                <div class="h1" id="first">NEXT</div>
+                <div class="h1" id="second">ROUND</div>
+                <p class="popup-subtext" id="popup-desc" style="display: none;"></p>
+                <div class="popup-container">
+                    <button class="button action-button 1" id="button1" onclick="performAction(1)">ROUND 2</button>
+                    <button class="button action-button 2" id="button2" onclick="performAction(2)">CANCEL</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Прелоадер -->
+    <div class="preloader_malc" id="preloader_malc">
+        <div>Loading Trails of Tukana...</div>
+    </div>
+
+    <!-- Уведомление об обновлении приложения -->
+    <div id="update-toast" class="update-toast" style="display: none;"></div>
+
+    <script src="scripts/script.js?v=1.3.0"></script>
+</body>
+
+</html>

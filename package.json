@@ -1,0 +1,14 @@
+{
+  "name": "trails-of-tukana-helper",
+  "version": "1.3.0",
+  "description": "Trails of Tukana Helper",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "node -e \"console.log('Build complete')\""
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
